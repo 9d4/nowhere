@@ -22,6 +22,7 @@
 #include "freertos/task.h"
 #include "freertos/queue.h"
 
+#include "driver/gpio.h"
 #include "driver/uart.h"
 
 #include "esp_system.h"
@@ -61,6 +62,10 @@ static void uart_event_task(void *pvParameters)
         {
             bzero(dtmp, RD_BUF_SIZE);
             ESP_LOGI(TAG, "uart[%d] event:", EX_UART_NUM);
+
+            gpio_set_level(GPIO_NUM_2, 0x0);
+            vTaskDelay(10 / portTICK_RATE_MS);
+            gpio_set_level(GPIO_NUM_2, 0x1);
 
             switch (event.type)
             {
@@ -118,8 +123,12 @@ static void uart_event_task(void *pvParameters)
 
 // init uart event.
 // Returns task handler
-void * uart_task_func()
+void *uart_task_func()
 {
+    // LED ON D4 -> GPIO 2. HIGH = LED OFF.
+    gpio_set_direction(GPIO_NUM_2, GPIO_MODE_OUTPUT);
+    gpio_set_level(GPIO_NUM_2, 0x1);
+
     // Configure parameters of an UART driver,
     // communication pins and install the driver
     uart_config_t uart_config = {
@@ -135,5 +144,5 @@ void * uart_task_func()
 
     // Create a task to handler UART event from ISR
     // xTaskCreate(uart_event_task, "uart_event_task", 2048, NULL, 12, NULL);
-    return uart_event_task;    
+    return uart_event_task;
 }

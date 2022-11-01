@@ -3,6 +3,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
+#include "wireless_comm.h"
 #include "uart_event.h"
 
 static const char *TAG = "main";
