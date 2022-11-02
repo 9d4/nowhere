@@ -26,6 +26,8 @@
 #include "esp_system.h"
 #include "esp_log.h"
 
+#include "gpio_actuator.h"
+
 static const char *TAG = "uart_events";
 
 /**
@@ -62,7 +64,8 @@ static void uart_event_task(void *pvParameters)
             ESP_LOGI(TAG, "uart[%d] event:", EX_UART_NUM);
 
             gpio_set_level(GPIO_NUM_2, 0x0);
-            vTaskDelay(10 / portTICK_RATE_MS);
+            buzz();
+            vTaskDelay(10 / portTICK_RATE_MS); 
             gpio_set_level(GPIO_NUM_2, 0x1);
 
             switch (event.type)
@@ -125,12 +128,12 @@ void *uart_task_func()
 {
     // LED ON D4 -> GPIO 2. HIGH = LED OFF.
     gpio_set_direction(GPIO_NUM_2, GPIO_MODE_OUTPUT);
-    gpio_set_level(GPIO_NUM_2, 0x1);
+    gpio_set_level(GPIO_NUM_2, 0x0);
 
     // Configure parameters of an UART driver,
     // communication pins and install the driver
     uart_config_t uart_config = {
-        .baud_rate = 74880,
+        .baud_rate = 9600,
         .data_bits = UART_DATA_8_BITS,
         .parity = UART_PARITY_DISABLE,
         .stop_bits = UART_STOP_BITS_1,

@@ -34,12 +34,7 @@ static void comm0_event_task(void *arg)
 
 void comm_gpio()
 {
-    gpio_config_t io_conf;
-    io_conf.intr_type = GPIO_INTR_ANYEDGE;
-    io_conf.mode = GPIO_MODE_INPUT;
-    io_conf.pin_bit_mask = GPIO_INPUT_BTN_0;
-
-    gpio_config(&io_conf);
+    gpio_set_direction(GPIO_INPUT_BTN_0, GPIO_MODE_INPUT);
     gpio_set_intr_type(GPIO_INPUT_BTN_0, GPIO_INTR_ANYEDGE);
 
     // initialize queue
